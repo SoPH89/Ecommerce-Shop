@@ -6,21 +6,24 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import StripeCheckout from "react-stripe-checkout";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
 const Container = styled.div``;
+
 const Wrapper = styled.div`
   padding: 20px;
   ${mobile({ padding: "10px" })}
 `;
+
 const Title = styled.h1`
   font-weight: 300;
   text-align: center;
 `;
+
 const Top = styled.div`
   display: flex;
   align-items: center;
@@ -52,6 +55,7 @@ const Bottom = styled.div`
   justify-content: space-between;
   ${mobile({ flexDirection: "column" })}
 `;
+
 const Info = styled.div`
   flex: 3;
 `;
@@ -61,28 +65,36 @@ const Product = styled.div`
   justify-content: space-between;
   ${mobile({ flexDirection: "column" })}
 `;
+
 const ProductDetail = styled.div`
   flex: 2;
   display: flex;
 `;
+
 const Image = styled.img`
   width: 200px;
 `;
+
 const Details = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 `;
+
 const ProductName = styled.span``;
+
 const ProductId = styled.span``;
+
 const ProductColor = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.color};
 `;
+
 const ProductSize = styled.span``;
+
 const PriceDetail = styled.div`
   flex: 1;
   display: flex;
@@ -96,11 +108,13 @@ const ProductAmountContainer = styled.div`
   align-items: center;
   margin-bottom: 20px;
 `;
+
 const ProductAmount = styled.div`
   font-size: 24px;
   margin: 5px;
   ${mobile({ margin: "5px 15px" })}
 `;
+
 const ProductPrice = styled.div`
   font-size: 30px;
   font-weight: 200;
@@ -124,15 +138,19 @@ const Summary = styled.div`
 const SummaryTitle = styled.h1`
   font-weight: 200;
 `;
+
 const SummaryItem = styled.div`
   margin: 30px 0px;
   display: flex;
-  justify-content: space-space-between;
+  justify-content: space-between;
   font-weight: ${(props) => props.type === "total" && "500"};
   font-size: ${(props) => props.type === "total" && "24px"};
 `;
+
 const SummaryItemText = styled.span``;
+
 const SummaryItemPrice = styled.span``;
+
 const Button = styled.button`
   width: 100%;
   padding: 10px;
@@ -149,6 +167,7 @@ const Cart = () => {
   const onToken = (token) => {
     setStripeToken(token);
   };
+
   useEffect(() => {
     const makeRequest = async () => {
       try {
@@ -156,12 +175,14 @@ const Cart = () => {
           tokenId: stripeToken.id,
           amount: 500,
         });
-        history.push("/success", { data: res.data });
+        history.push("/success", {
+          stripeData: res.data,
+          products: cart,
+        });
       } catch {}
     };
     stripeToken && makeRequest();
   }, [stripeToken, cart.total, history]);
-
   return (
     <Container>
       <Navbar />
